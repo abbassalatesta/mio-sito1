@@ -5,7 +5,7 @@
 ## 1. Cos'è
 App web mobile "Pappe": file unico HTML/JS pubblicato come artifact su claude.ai (privato finché non lo condividi). Menu settimanali di pranzo e cena per tutta la famiglia, con ricette adattate all'età, macro (carboidrati, grassi, proteine, fibre), lista della spesa/dispensa, calendario, più componenti della famiglia, allergeni, colazioni e spuntini.
 
-- Artifact: https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju (**versione 17**)
+- Artifact: https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju (**versione 17**; la v18 è nel repo GitHub `abbassalatesta/mio-sito1`, `index.html`)
 - File di lavoro: `/mnt/user-data/outputs/pappe-v3.html` (~120 KB), test in `/mnt/user-data/outputs/tests/` (`sh tests/run.sh`)
 - Lingua: italiano. Utente: genitore, bambino di 8 mesi + adulti.
 
@@ -20,6 +20,7 @@ App web mobile "Pappe": file unico HTML/JS pubblicato come artifact su claude.ai
 - **Piano**: pannello unico con selettore Giorno/Settimana + striscia dei giorni; pranzo e cena; spuntini/colazioni (3 preparazioni a settimana, suggerimento yogurt/frutta a merenda); segna "preparata" (scala la dispensa).
 - **Cambia il pasto** (foglio): campo "Crea il tuo piatto", elenco "Oppure scegli", scambio con altro pasto.
 - **Ricettario + piatti tuoi** (novità): il campo accetta nome di piatto o ingrediente. Cerca nel ricettario integrato (36 piatti italiani con ingredienti, preparazione, macro, filtrati per età/allergie) e nei piatti "tuoi". Se non c'è: l'utente scrive gli ingredienti principali senza quantità, l'app stima porzioni per età e macro dalla **tabella ingredienti (~130 voci, per 100 g)**; ingredienti non riconosciuti segnalati e esclusi dal calcolo; sale/pepe/erbe ignorati. Salvataggio con "Salva e metti nel menu": piatto salvato per tutta la famiglia (`S.custom`, id 100–199), etichetta "tuo"/"Valori stimati", entra nei backup; "Elimina dal mio ricettario" lo nasconde dalla ricerca (resta valido nei menu già fatti). La dispensa non viene toccata e il pasto non è segnato come preparato in automatico.
+- **Pappe nel ricettario e controllo età** (v18): 14 pappe (id 236–249, tipo "Pappa", età [6,24] o [8,24]) cercabili dal ricettario. Tabella `AGE` di ingredienti sconsigliati sotto una certa età (miele, sale, zucchero, salumi, formaggi salati, molluschi, funghi, olive, cioccolato, caffè → limite rigido; frutta secca, uva, pomodorini → solo nota sotto i 4 anni). I piatti tuoi hanno un'età minima ricavata dagli ingredienti (`minA`, campo `x` per sale ecc. che non entrano nelle porzioni): se il componente è troppo piccolo compaiono in ricerca con etichetta "da N mesi", il pulsante diventa "Non adatto a …" e, per un piatto nuovo, "Salva nel mio ricettario" (salva senza toccare il menu). Avviso anche nella scheda del pasto se un piatto tuo non adatto è già in menu. Aggiunte al ricettario ingredienti: noci, mandorle, nocciole, arachidi, pinoli.
 - **Spesa/dispensa**, **Calendario** (puntini per i pasti preparati, vista Famiglia), **Famiglia** (più componenti, allergeni: glutine, latte, uova, pesce, legumi + testo libero), **Segnala**.
 - Selettore componente come chip nell'header; header uniformi fra le sezioni.
 - Fogli (ricetta, cambia pasto, info): si chiudono anche **trascinando verso il basso** (>90 px, solo se il contenuto è in cima).
