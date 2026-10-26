@@ -5,7 +5,7 @@
 ## 1. Cos'è
 App web mobile "Pappe": file unico HTML/JS pubblicato come artifact su claude.ai (privato finché non lo condividi). Menu settimanali di pranzo e cena per tutta la famiglia, con ricette adattate all'età, macro (carboidrati, grassi, proteine, fibre), lista della spesa/dispensa, calendario, più componenti della famiglia, allergeni, colazioni e spuntini.
 
-- Artifact: https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju (**versione 18**, stessa del file `index.html` nel repo GitHub `abbassalatesta/mio-sito1`)
+- Artifact: https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju (**versione 19**, stessa del file `index.html` nel repo GitHub `abbassalatesta/mio-sito1`)
 - File di lavoro: `/mnt/user-data/outputs/pappe-v3.html` (~120 KB), test in `/mnt/user-data/outputs/tests/` (`sh tests/run.sh`)
 - Lingua: italiano. Utente: genitore, bambino di 8 mesi + adulti.
 
