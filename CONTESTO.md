@@ -1,0 +1,50 @@
+# Pappe — contesto del progetto (per riprendere in una nuova chat)
+
+> Incolla questo file all'inizio della nuova chat insieme al file `pappe-v3.html` (l'app) e, se vuoi, alla cartella `tests/`. Poi scrivi cosa vuoi fare.
+
+## 1. Cos'è
+App web mobile "Pappe": file unico HTML/JS pubblicato come artifact su claude.ai (privato finché non lo condividi). Menu settimanali di pranzo e cena per tutta la famiglia, con ricette adattate all'età, macro (carboidrati, grassi, proteine, fibre), lista della spesa/dispensa, calendario, più componenti della famiglia, allergeni, colazioni e spuntini.
+
+- Artifact: https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju (**versione 18**, stessa del file `index.html` nel repo GitHub `abbassalatesta/mio-sito1`)
+- File di lavoro: `/mnt/user-data/outputs/pappe-v3.html` (~120 KB), test in `/mnt/user-data/outputs/tests/` (`sh tests/run.sh`)
+- Lingua: italiano. Utente: genitore, bambino di 8 mesi + adulti.
+
+## 2. Regole di lavoro dell'utente
+- Quando dice "parliamone prima" / "non fare modifiche": discutere senza toccare il codice.
+- Fare un **backup** prima di modifiche importanti (file `pappe-v3-backup-pre-*.html` in outputs).
+- UI pulita: **niente pulsanti in più**, stile coerente fra le sezioni.
+- La funzione "pasti fuori casa + adattamento automatico dei pasti successivi" è stata provata e **rifiutata**: non rimetterla se non richiesto (versione conservata in `pappe-v3-con-fuoricasa.html`).
+- Verificare in browser vero (Playwright/Chromium) oltre ai test; dichiarare che non è stato provato su telefono vero.
+
+## 3. Funzioni presenti (v17)
+- **Piano**: pannello unico con selettore Giorno/Settimana + striscia dei giorni; pranzo e cena; spuntini/colazioni (3 preparazioni a settimana, suggerimento yogurt/frutta a merenda); segna "preparata" (scala la dispensa).
+- **Cambia il pasto** (foglio): campo "Crea il tuo piatto", elenco "Oppure scegli", scambio con altro pasto.
+- **Ricettario + piatti tuoi** (novità): il campo accetta nome di piatto o ingrediente. Cerca nel ricettario integrato (36 piatti italiani con ingredienti, preparazione, macro, filtrati per età/allergie) e nei piatti "tuoi". Se non c'è: l'utente scrive gli ingredienti principali senza quantità, l'app stima porzioni per età e macro dalla **tabella ingredienti (~130 voci, per 100 g)**; ingredienti non riconosciuti segnalati e esclusi dal calcolo; sale/pepe/erbe ignorati. Salvataggio con "Salva e metti nel menu": piatto salvato per tutta la famiglia (`S.custom`, id 100–199), etichetta "tuo"/"Valori stimati", entra nei backup; "Elimina dal mio ricettario" lo nasconde dalla ricerca (resta valido nei menu già fatti). La dispensa non viene toccata e il pasto non è segnato come preparato in automatico.
+- **Pappe nel ricettario e controllo età** (v18): 14 pappe (id 236–249, tipo "Pappa", età [6,24] o [8,24]) cercabili dal ricettario. Tabella `AGE` di ingredienti sconsigliati sotto una certa età (miele, sale, zucchero, salumi, formaggi salati, molluschi, funghi, olive, cioccolato, caffè → limite rigido; frutta secca, uva, pomodorini → solo nota sotto i 4 anni). I piatti tuoi hanno un'età minima ricavata dagli ingredienti (`minA`, campo `x` per sale ecc. che non entrano nelle porzioni): se il componente è troppo piccolo compaiono in ricerca con etichetta "da N mesi", il pulsante diventa "Non adatto a …" e, per un piatto nuovo, "Salva nel mio ricettario" (salva senza toccare il menu). Avviso anche nella scheda del pasto se un piatto tuo non adatto è già in menu. Aggiunte al ricettario ingredienti: noci, mandorle, nocciole, arachidi, pinoli.
+- **Spesa/dispensa**, **Calendario** (puntini per i pasti preparati, vista Famiglia), **Famiglia** (più componenti, allergeni: glutine, latte, uova, pesce, legumi + testo libero), **Segnala**.
+- Selettore componente come chip nell'header; header uniformi fra le sezioni.
+- Fogli (ricetta, cambia pasto, info): si chiudono anche **trascinando verso il basso** (>90 px, solo se il contenuto è in cima).
+- Backup export/import (base64 JSON, validazione, doppia conferma), salvataggio locale + cloud (capability `db`/`user`, doc `data/users/{id}/pappe`, sospeso sopra 240 KB).
+
+## 4. Dettagli tecnici da ricordare
+- Stato `S`: `kids[]` (id, name, sex, dob, plans{lunedì:[14 id]}, done{data-slot:id+1}, stock, bought, avoid[], avoidTxt, ageKey, snk), `cur`, `custom[]`. `S.plans/done/stock/bought/ageKey` sono proxy sul componente corrente (`K()`).
+- Piatti: `D` (id 0–49: pappe e adulti 30–49), `SND` (60–66 spuntini, fuori dal pool), `CB` (200–235 ricettario), custom 100–199. Ogni piatto `{id,n,t,a:[minMesi,maxMesi],m:[carb,grassi,prot,fibre],i:[[nome,g]],hot}`; `i0/m0` valori base scalati da `fac(mesi)` in `applyAge()` (<8:.75, <10:1, <12:1.25, <24:1.5, <48:2, <84:3, <144:3.5, ≥144:4). `R[id]={t,s[]}` ricette. `B` mappa id→piatto. `pool(dt)` filtra per età e allergeni (`GR`, `okAv`).
+- Ricettario: `NU` (nome→[carb,grassi,prot,fibre,porzione base]), `ALI` (sinonimi), `parseIng`, `resolveIng`, `calcM`, `dishFind`, `ideas`, `compose`, `ideaView`, `putIdea`, `regCustom/regList`, `delCustom`.
+- Trappole note: negli handler inline non usare una funzione globale chiamata `open` (usa `openPick`); attributi con apostrofi vanno passati da `E()`; nomi dei piatti tuoi sono ripuliti da `<>&"` e apostrofi; `fixWeeks` non sostituisce id ≥100; `bkOk` accetta id <60 o ≥100.
+- Test: harness Node con DOM finto (`tests/harness.js`; file t_dati, t_spuntini, t_spesa, t_backup, t_robustezza, t_ui, t_selettore, t_ricettario) + script Playwright in `/tmp/shots` (non persistenti).
+
+## 5. Sicurezza
+L'app non ha codice server/PHP: la vulnerabilità "PHP2SHELL" non la riguarda. Rischi reali: dati familiari sensibili nei backup, condivisione del link, nessun audit di sicurezza indipendente. L'artifact è privato finché non lo si condivide.
+
+## 6. Decisioni prese sul ricettario (storico)
+- Niente AI/`sample` a runtime (non funzionerebbe per visitatori anonimi di un URL pubblico) e niente server: solo ricettario integrato + inserimento manuale ingredienti.
+- Macro sempre derivati dalla tabella ingredienti, indicati come stime.
+
+## 7. Da fare / idee aperte
+- **"Segnala"**: manca ancora la casella email/destinatario da inserire (l'utente deve fornirla).
+- Possibili ampliamenti: più piatti/ingredienti, scelta di quantità se l'utente le conosce, eliminazione definitiva dei piatti tuoi, salvataggio per singolo componente invece che per famiglia, scelta se marcare come preparato il pasto sostituito.
+- Non in programma salvo richiesta: adattamento automatico dei pasti successivi, "armonizzazione" dei menu per limitare le preparazioni, riconoscimento con AI.
+- Mai provata l'app su un telefono vero: chiedere all'utente un riscontro (sensibilità swipe, leggibilità, ecc.).
+
+## 8. Come riprendere
+Fornisci alla nuova chat `pappe-v3.html` (e `tests/` se serve), poi indica la richiesta. Per modifiche: backup → modifica → `sh tests/run.sh` → prova nel browser → pubblica sullo stesso URL (passando l'URL dell'artifact come `url`).
