@@ -15,6 +15,8 @@ App web mobile "Pappe": file unico HTML/JS pubblicato come artifact su claude.ai
 - UI pulita: **niente pulsanti in più**, stile coerente fra le sezioni.
 - La funzione "pasti fuori casa + adattamento automatico dei pasti successivi" è stata provata e **rifiutata**: non rimetterla se non richiesto (versione conservata in `pappe-v3-con-fuoricasa.html`).
 - Verificare in browser vero (Playwright/Chromium) oltre ai test; dichiarare che non è stato provato su telefono vero.
+- **Regola dei rilasci (vale per tutti i rilasci futuri):** un aggiornamento non deve mai cambiare la settimana in corso dell'utente. Le modifiche al motore del menu si applicano dalla settimana successiva (le settimane future già create possono essere ricalibrate una volta, solo nei pasti proposti dall'app); la settimana in corso cambia solo se l'utente la rigenera o sceglie un piatto. Se cambiano le regole del motore, alzare `PV` e lasciare che `upgradePlans` tocchi solo le settimane future. Mai toccare pasti preparati, scelti dall'utente o giorni passati.
+- Flusso di pubblicazione: prima solo l'artifact per il test dell'utente, poi `main` su GitHub (pull request + merge) quando l'utente conferma.
 
 ## 3. Funzioni presenti (v17)
 - **Piano**: pannello unico con selettore Giorno/Settimana + striscia dei giorni; pranzo e cena; spuntini/colazioni (3 preparazioni a settimana, suggerimento yogurt/frutta a merenda); segna "preparata" (scala la dispensa).
