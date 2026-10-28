@@ -13,8 +13,8 @@ App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu 
 Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
 
 **Dove si trova**
-- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 35** (in prova; `main` è ancora alla 34).
-- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 36** (in prova; `main` è ancora alla 34).
+- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35–36 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
 - `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
 - Dati dell'utente: nel browser (`localStorage`, chiave `pappe`) e nel suo account (capability `db` + `user`, documento `data/users/{id}/pappe`, campo `json`).
 
@@ -41,7 +41,7 @@ Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adu
 - **Piano**: selettore Giorno/Settimana, striscia dei giorni, pranzo e cena, colazioni e spuntini (3 preparazioni a settimana), "Segna come preparata" (scala la dispensa).
   - Sotto i pasti, una riga con l'equilibrio del giorno ("Giorno in equilibrio · carboidrati x%, grassi y%, proteine z%" oppure "Poche proteine" ecc.).
   - Foglio "i": spiegazione dei valori e dell'equilibrio.
-  - **Settimana**: scheda con "N di 7 giorni in equilibrio" (e quali giorni no), barre di carboidrati, grassi e proteine (media della settimana e fascia per l'età), fibre se l'età le prevede, sezione **Proteine** a quadratini a tutta larghezza (pieno, manca, margine tratteggiato/usato, oltre in arancione); pallino verde/arancione accanto a ogni giorno. Non c'è nella vista Famiglia.
+  - **Settimana**: scheda con "N di 7 giorni in equilibrio" (e quali giorni no), sezione **Macro** con barre di carboidrati, grassi e proteine (media della settimana e fascia per l'età), fibre se l'età le prevede, sezione **Proteine** a quadratini a tutta larghezza (pieno, manca, margine tratteggiato/usato, oltre in arancione); pallino verde/arancione accanto a ogni giorno. Non c'è nella vista Famiglia.
 - **Scheda del pasto**: "Segna come preparata", poi la riga "Modifica | Sostituisci | Elimina" (Elimina solo per i piatti tuoi), "Chiudi" in fondo.
 - **Modifica**:
   - su un piatto tuo modifica il piatto ovunque compaia;
