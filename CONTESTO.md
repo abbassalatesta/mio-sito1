@@ -13,8 +13,8 @@ App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu 
 Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
 
 **Dove si trova**
-- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 38** (in prova; `main` è ancora alla 34).
-- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35–38 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 38**.
+- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main`, identico all'artifact v38 (PR #9). Ramo di lavoro usato: `claude/settimana-proteine`.
 - `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
 - Dati dell'utente: nel browser (`localStorage`, chiave `pappe`) e nel suo account (capability `db` + `user`, documento `data/users/{id}/pappe`, campo `json`).
 
