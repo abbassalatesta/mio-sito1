@@ -13,10 +13,10 @@ App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu 
 Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
 
 **Dove si trova**
-- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 38**.
-- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main`, identico all'artifact v38 (PR #9). Ramo di lavoro usato: `claude/settimana-proteine`.
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 39**.
+- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main`, identico all'artifact v39. Ramo di lavoro usato: `claude/famiglia-condivisa` (backup `backup/pappe-v3-backup-pre-famiglia-condivisa.html`).
 - `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
-- Dati dell'utente: nel browser (`localStorage`, chiave `pappe`) e nel suo account (capability `db` + `user`, documento `data/users/{id}/pappe`, campo `json`).
+- Dati: dalla v39 **famiglia condivisa** nel db dell'artifact: `fam/meta` (`kids{id:{ord,name,sex,dob,avoid,avoidTxt,ageKey,pv}}`, `custom{id:{...}}`) e `fam/k_<id>` (`plans, done, stock, bought, snk, fix`). Regole: `{path:"fam", read:"interact", write:"interact"}` (Collaboratori e su). Scrittura per differenze (`dDiff`/`dApply`, null = chiave tolta, `update` con unione ricorsiva), base `FB`, ascolto `onSnapshot` di meta e di ogni componente, unione delle modifiche locali non ancora salvate (`onRemote`/`mergeIn`). Il componente selezionato (`cur`) resta locale. Primo avvio: se `fam/meta` non c'è, chi apre carica i suoi dati (anche dal vecchio `data/users/{id}/pappe`, che non viene più scritto); se c'è, lo adotta. Chi non può scrivere vede in sola lettura. Cache locale in `localStorage` (`pappe`). Id dei piatti tuoi scelti a caso fra i liberi (`newCid`) per evitare collisioni.
 
 ## 2. Regole di lavoro dell'utente
 - "Parliamone prima" / "non fare modifiche": si discute senza toccare il codice. Quando una scelta cambia l'aspetto o il comportamento, chiedere prima.
@@ -126,6 +126,7 @@ L'artifact resta privato finché l'utente non lo condivide. I valori nutrizional
 - Ricalibrazione automatica con avviso e Annulla, ma solo sui pasti proposti dall'app.
 
 ## 7. Da fare / idee aperte
+- **Versione pubblica con famiglie separate** (rimandata dall'utente): niente username e password; ogni famiglia è un link con chiave segreta nel frammento `#` (anche come QR generato nell'app, mai con servizi esterni); dati cifrati sul telefono (WebCrypto) e salvati come blocchi cifrati in un archivio minimo (proposto Cloudflare Workers + KV, pubblicato dall'utente con le sue credenziali); unione delle modifiche sul telefono riusando `dDiff`/`dApply`; pulsante "Cambia link della famiglia"; backup. Prima dell'apertura: revisione di sicurezza indipendente e informativa privacy. Oggi (v39) l'artifact ha un solo spazio comune per tutti gli invitati: per un'altra famiglia serve una copia separata dell'artifact.
 - **Segnala**: manca l'indirizzo email di destinazione (deve fornirlo l'utente).
 - Quantità facoltative quando l'utente crea o modifica un piatto.
 - "Salva" invece di "Calcola" anche nella creazione di un piatto nuovo.
