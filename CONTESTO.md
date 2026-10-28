@@ -48,6 +48,7 @@ L'app non ha codice server/PHP: la vulnerabilità "PHP2SHELL" non la riguarda. R
 - Macro sempre derivati dalla tabella ingredienti, indicati come stime.
 
 ## 7. Da fare / idee aperte
+- **Pronto per il prossimo rilascio** (sul ramo, non ancora pubblicato): ingrediente "Porchetta" (carne rossa/salume, avviso sotto i 12 mesi).
 - **"Segnala"**: manca ancora la casella email/destinatario da inserire (l'utente deve fornirla).
 - Possibili ampliamenti: più ingredienti, composizione automatica dei piatti dagli ingredienti (discussa e scartata per ora: meno sicura per lo svezzamento), scelta di quantità se l'utente le conosce, salvataggio per singolo componente invece che per famiglia, scelta se marcare come preparato il pasto sostituito.
 - Non in programma salvo richiesta: "armonizzazione" dei menu fra componenti per limitare le preparazioni, riconoscimento con AI.
