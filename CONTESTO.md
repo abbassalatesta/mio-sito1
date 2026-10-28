@@ -13,8 +13,8 @@ App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu 
 Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
 
 **Dove si trova**
-- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 37** (in prova; `main` è ancora alla 34).
-- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35–37 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 38** (in prova; `main` è ancora alla 34).
+- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35–38 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
 - `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
 - Dati dell'utente: nel browser (`localStorage`, chiave `pappe`) e nel suo account (capability `db` + `user`, documento `data/users/{id}/pappe`, campo `json`).
 
@@ -47,6 +47,7 @@ Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adu
   - su un piatto tuo modifica il piatto ovunque compaia;
   - su un piatto dell'app crea un piatto tuo **solo per quel pasto**, con nome e ingredienti dell'originale e i grammi originali; l'originale resta negli altri giorni;
   - si conferma con **Salva**: niente cambiamenti → "Nessuna modifica"; solo il nome → aggiorna il nome senza ricalcolare; ingredienti cambiati → ricalcola i valori e ricalibra la settimana.
+- **Piatti tuoi in rotazione** (v38): nel compositore (crea e modifica) l'interruttore "Proponilo nelle prossime settimane", spento di default e disattivato se c'è un ingrediente fuori ricettario. Vale per la fascia d'età del componente selezionato (`BAND`: 6–11 mesi, 1–2 anni, 3–11 anni, dai 12 anni; campo `rot` del piatto) e mai sotto l'età minima degli ingredienti. Il piatto entra in `pool()` con le stesse regole; quando lo mette il motore è un pasto libero (`isFix`). La scheda del piatto mostra l'etichetta "Nelle prossime settimane · fascia" e, con più componenti, "Porzioni in famiglia" (grammi per ognuno). Backup `pappe-v3-backup-pre-rotazione-piatti-tuoi.html`.
 - **Elimina** (solo piatti tuoi): schermata di conferma che dice quanti pasti futuri e di quali componenti verranno sostituiti con proposte equilibrate. I pasti preparati e i giorni passati lo conservano.
 - **Sostituisci** (foglio "Cambia il pasto"):
   - **Crea il tuo piatto**: nome + ingredienti scelti dal ricettario ingredienti, con suggerimenti mentre si scrive, etichette rimovibili e Invio per testo libero separato da virgole. Gli ingredienti sconosciuti restano segnati "non nel ricettario" ed esclusi dai valori. Poi **Calcola** → anteprima → "Salva e metti nel menu".
