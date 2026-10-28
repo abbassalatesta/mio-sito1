@@ -13,7 +13,7 @@ App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu 
 Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
 
 **Dove si trova**
-- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 40**.
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 41**.
 - **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main`, identico all'artifact v39. Ramo di lavoro usato: `claude/famiglia-condivisa` (backup `backup/pappe-v3-backup-pre-famiglia-condivisa.html`).
 - `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
 - Dati: dalla v39 **famiglia condivisa** nel db dell'artifact: `fam/meta` (`kids{id:{ord,name,sex,dob,avoid,avoidTxt,ageKey,pv}}`, `custom{id:{...}}`) e `fam/k_<id>` (`plans, done, stock, bought, snk, fix`). Regole: `{path:"fam", read:"interact", write:"interact"}` (Collaboratori e su). Scrittura per differenze (`dDiff`/`dApply`, null = chiave tolta, `update` con unione ricorsiva), base `FB`, ascolto `onSnapshot` di meta e di ogni componente, unione delle modifiche locali non ancora salvate (`onRemote`/`mergeIn`). Il componente selezionato (`cur`) resta locale. Primo avvio: se `fam/meta` non c'è, chi apre carica i suoi dati (anche dal vecchio `data/users/{id}/pappe`, che non viene più scritto); se c'è, lo adotta. Chi non può scrivere vede in sola lettura. Cache locale in `localStorage` (`pappe`). Id dei piatti tuoi scelti a caso fra i liberi (`newCid`) per evitare collisioni.
@@ -53,6 +53,7 @@ Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adu
   - **Crea il tuo piatto**: nome + ingredienti scelti dal ricettario ingredienti, con suggerimenti mentre si scrive, etichette rimovibili e Invio per testo libero separato da virgole. Gli ingredienti sconosciuti restano segnati "non nel ricettario" ed esclusi dai valori. Poi **Calcola** → anteprima → "Salva e metti nel menu".
   - **Cerca nel ricettario**: cerca piatti o ingredienti; suggerisce tutti gli ingredienti e i piatti del ricettario.
   - **Oppure scegli**: elenco dei piatti adatti; poi lo scambio con un altro pasto.
+- **Rigenera la settimana** (v41): cambia solo i pasti liberi (`freeSl`): restano preparati, giorni passati e pasti scelti dall'utente. `fixDone` ripara le settimane in cui un pasto preparato mostrava un altro piatto (rigenerazioni delle versioni precedenti): il piano torna al piatto registrato in `done`.
 - **Ricalibrazione automatica**: quando l'utente sceglie, modifica o scambia un piatto, l'app ricalibra prima l'altro pasto del giorno e poi la settimana, toccando solo i pasti proposti dall'app. Un avviso dice quali pasti sono cambiati, con "Annulla".
 - **Avvisi per età**: ingredienti sconsigliati sotto una certa età.
   - Limite rigido (piatto bloccato per quel componente): miele, sale, zuccheri, salumi, formaggi salati/affumicati/erborinati, molluschi, pesce affumicato o sotto sale, dado, funghi, olive e capperi, cioccolato e cacao, caffè, alcol.
