@@ -1,57 +1,142 @@
 # Pappe — contesto del progetto (per riprendere in una nuova chat)
 
-> Incolla questo file all'inizio della nuova chat insieme al file `pappe-v3.html` (l'app) e, se vuoi, alla cartella `tests/`. Poi scrivi cosa vuoi fare.
+> Allega questo file all'inizio della nuova chat e scrivi cosa vuoi fare. Se la chat ha accesso al repository GitHub `abbassalatesta/mio-sito1`, l'app è il file `index.html` (ramo `main`); altrimenti allega anche `index.html`.
 
 ## 1. Cos'è
-App web mobile "Pappe": file unico HTML/JS pubblicato come artifact su claude.ai (privato finché non lo condividi). Menu settimanali di pranzo e cena per tutta la famiglia, con ricette adattate all'età, macro (carboidrati, grassi, proteine, fibre), lista della spesa/dispensa, calendario, più componenti della famiglia, allergeni, colazioni e spuntini.
+App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu settimanali di pranzo e cena per tutta la famiglia, con:
+- ricette e porzioni adattate all'età;
+- valori nutrizionali (carboidrati, grassi, proteine, fibre) ed equilibrio settimanale;
+- lista della spesa e dispensa, colazioni e spuntini;
+- più componenti della famiglia, allergeni e avvisi per età;
+- piatti creati dall'utente.
 
-- Artifact: https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju (**versione 34**, stessa del file `index.html` nel repo GitHub `abbassalatesta/mio-sito1`)
-- File di lavoro: `/mnt/user-data/outputs/pappe-v3.html` (~120 KB), test in `/mnt/user-data/outputs/tests/` (`sh tests/run.sh`)
-- Lingua: italiano. Utente: genitore, bambino di 8 mesi + adulti.
+Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
+
+**Dove si trova**
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 35** (in prova; `main` è ancora alla 34).
+- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
+- `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
+- Dati dell'utente: nel browser (`localStorage`, chiave `pappe`) e nel suo account (capability `db` + `user`, documento `data/users/{id}/pappe`, campo `json`).
 
 ## 2. Regole di lavoro dell'utente
-- Quando dice "parliamone prima" / "non fare modifiche": discutere senza toccare il codice.
-- Fare un **backup** prima di modifiche importanti (file `pappe-v3-backup-pre-*.html` in outputs).
-- UI pulita: **niente pulsanti in più**, stile coerente fra le sezioni.
-- La funzione "pasti fuori casa + adattamento automatico dei pasti successivi" è stata provata e **rifiutata**: non rimetterla se non richiesto (versione conservata in `pappe-v3-con-fuoricasa.html`).
-- Verificare in browser vero (Playwright/Chromium) oltre ai test; dichiarare che non è stato provato su telefono vero.
-- **Regola dei rilasci (vale per tutti i rilasci futuri):** un aggiornamento non deve mai cambiare la settimana in corso dell'utente. Le modifiche al motore del menu si applicano dalla settimana successiva (le settimane future già create possono essere ricalibrate una volta, solo nei pasti proposti dall'app); la settimana in corso cambia solo se l'utente la rigenera o sceglie un piatto. Se cambiano le regole del motore, alzare `PV` e lasciare che `upgradePlans` tocchi solo le settimane future. Mai toccare pasti preparati, scelti dall'utente o giorni passati.
-- Flusso di pubblicazione: prima solo l'artifact per il test dell'utente, poi `main` su GitHub (pull request + merge) quando l'utente conferma.
+- "Parliamone prima" / "non fare modifiche": si discute senza toccare il codice. Quando una scelta cambia l'aspetto o il comportamento, chiedere prima.
+- **Backup** prima di ogni modifica importante: `backup/pappe-v3-backup-pre-<argomento>.html`.
+- **UI pulita**: niente pulsanti in più, stile coerente fra le sezioni, testi brevi.
+- **Pubblicazione in due passi**:
+  1. prima solo l'artifact (stesso URL), così l'utente prova;
+  2. poi `main` su GitHub (pull request + merge) quando l'utente dice "puoi pubblicare".
+  Quando l'utente dice "rilascia", fare entrambi.
+- **Regola dei rilasci** (vale per tutti i rilasci futuri):
+  - un aggiornamento non deve mai cambiare la settimana in corso dell'utente;
+  - le modifiche al motore del menu valgono dalla settimana successiva;
+  - la settimana in corso cambia solo se l'utente la rigenera o sceglie un piatto;
+  - mai toccare pasti preparati, scelti dall'utente o giorni passati;
+  - se cambiano le regole del motore, alzare `PV`: `upgradePlans` ricalibra una volta solo le settimane future già create.
+- **Verifiche**: provare in Chromium con Playwright (viewport 390×844), confrontare schermate prima/dopo quando la modifica non deve cambiare l'aspetto, dire sempre che non è stato provato su un telefono vero.
+- La funzione "pasti fuori casa + adattamento automatico dei pasti successivi" è stata provata e **rifiutata**: non rimetterla se non richiesta.
+- Lo **schema settimanale delle proteine** dell'utente è attivo dalla v35: uova 1, formaggi 2, legumi 3, pesce 3, carne bianca 2, carne rossa 1 (12 quadratini pieni) più 3 di margine (uova, legumi, pesce); i 2 pasti restanti sono senza proteine.
+- L'ultima prova di spostare i suggerimenti degli ingredienti sopra il campo (per la tastiera del telefono) e il numero di versione nel foglio "i" è stata **scartata** dall'utente: la versione corretta è quella su GitHub.
 
-## 3. Funzioni presenti (v17)
-- **Piano**: pannello unico con selettore Giorno/Settimana + striscia dei giorni; pranzo e cena; spuntini/colazioni (3 preparazioni a settimana, suggerimento yogurt/frutta a merenda); segna "preparata" (scala la dispensa).
-- **Cambia il pasto** (foglio): "Crea il tuo piatto" è un compositore diretto (v19): nome del piatto + ingredienti scelti dal ricettario ingredienti con suggerimenti mentre scrivi (diventano etichette rimovibili; Invio aggiunge anche testo libero, separato da virgole, e gli ingredienti sconosciuti restano segnati "non nel ricettario" ed esclusi dai valori) → Calcola. Poi "Cerca nel ricettario" (ricerca piatto/ingrediente), elenco "Oppure scegli", scambio con altro pasto. Lo stesso compositore compare nei risultati di ricerca (nome precompilato se non trovato, ingrediente cercato già scelto). Stato: `cName`, `cSel`, `cOrig`; "Indietro" dal piatto nuovo torna al compositore con i dati (`cBack`).
-- **Ricettario + piatti tuoi** (novità): il campo accetta nome di piatto o ingrediente. Cerca nel ricettario integrato (36 piatti italiani con ingredienti, preparazione, macro, filtrati per età/allergie) e nei piatti "tuoi". Se non c'è: l'utente scrive gli ingredienti principali senza quantità, l'app stima porzioni per età e macro dalla **tabella ingredienti (~130 voci, per 100 g)**; ingredienti non riconosciuti segnalati e esclusi dal calcolo; sale/pepe/erbe ignorati. Salvataggio con "Salva e metti nel menu": piatto salvato per tutta la famiglia (`S.custom`, id 100–199), etichetta "tuo"/"Valori stimati", entra nei backup; "Elimina dal mio ricettario" lo nasconde dalla ricerca (resta valido nei menu già fatti). La dispensa non viene toccata e il pasto non è segnato come preparato in automatico.
-- **Pappe nel ricettario e controllo età** (v18): 14 pappe (id 236–249, tipo "Pappa", età [6,24] o [8,24]) cercabili dal ricettario. Tabella `AGE` di ingredienti sconsigliati sotto una certa età (miele, sale, zucchero, salumi, formaggi salati, molluschi, funghi, olive, cioccolato, caffè → limite rigido; frutta secca, uva, pomodorini → solo nota sotto i 4 anni). I piatti tuoi hanno un'età minima ricavata dagli ingredienti (`minA`, campo `x` per sale ecc. che non entrano nelle porzioni): se il componente è troppo piccolo compaiono in ricerca con etichetta "da N mesi", il pulsante diventa "Non adatto a …" e, per un piatto nuovo, "Salva nel mio ricettario" (salva senza toccare il menu). Avviso anche nella scheda del pasto se un piatto tuo non adatto è già in menu. Aggiunte al ricettario ingredienti: noci, mandorle, nocciole, arachidi, pinoli.
-- **Modifica ed eliminazione dei piatti tuoi** (v21–v24): scheda del pasto con "Segna come preparata", poi riga "Modifica | Sostituisci | Elimina" (Modifica ed Elimina solo per i piatti tuoi), "Chiudi" in fondo. "Modifica" riapre il compositore con nome e ingredienti e conferma con **Salva** (`saveEdit`): nessun cambiamento → chiude ("Nessuna modifica"); solo nome → aggiorna il nome senza ricalcolare; ingredienti cambiati → ricalcola i valori e ricalibra la settimana (avviso con Annulla). "Elimina" apre una schermata di conferma (`delCustom`: spiega quanti pasti futuri e di quali componenti verranno sostituiti; pulsanti Elimina e Annulla, che torna alla scheda) e `delDo` nasconde il piatto dal ricettario e lo sostituisce con proposte equilibrate in tutti i pasti futuri non preparati di tutti i componenti; pasti preparati e giorni passati lo conservano (resta in `S.custom` con `h:1`). La creazione di un piatto nuovo usa ancora "Calcola" con anteprima.
-- **Modifica dei piatti dell'app** (v31): nella scheda del pasto "Modifica" c'è per tutti i piatti. Per un piatto dell'app (`copyDish`/`saveCopy`) apre il compositore con nome e ingredienti del piatto (grammi originali mantenuti per gli ingredienti già presenti) e Salva crea un piatto tuo che sostituisce solo quel pasto (fissato, ricalibrazione con Annulla; se il pasto era preparato resta preparato e la dispensa viene aggiornata); l'originale resta negli altri giorni. Il campo "Cerca nel ricettario" suggerisce tutti gli ingredienti del ricettario e i nomi dei piatti (`ingOpts`), non più solo quelli dei menu attuali.
-- **Ricettario ingredienti ampliato** (v30): `NU` passa da 123 a 287 voci (288 con la porchetta, v34) (cereali e pani, legumi, carni e salumi, pesci e molluschi, formaggi, verdure, frutta e frutta secca, semi, condimenti, spezie a porzione 0), `ALI` da 75 a 146 sinonimi. Allergeni (`GR`), gruppi proteici (`GI`), basi (`BASEI`) e regole per età (`AGE`: salumi, formaggi stagionati/affumicati/erborinati, molluschi, pesce affumicato o sotto sale, dado, alcol, olive e capperi, cioccolato e cacao; note sotto i 4 anni per frutta secca, uva/ciliegie/pomodorini, peperoncino) aggiornati per le voci nuove. `resolveIng`: prima il nome intero com'è scritto (anche con "di"), poi senza parole vuote; se il testo contiene più nomi o sinonimi vince il più specifico (più lungo).
-- **Varietà del menu generato** (v26): 26 piatti di base nuovi in `XD` (ricette fisse, valori da `calcM`): pappe 6–12 mesi id 70–74 (legumi, uovo, tacchino), piatti 10 mesi–12 anni id 50–59 (4 con legumi, pesce, uova, carne), piatti italiani adulti id 76–86. Gli id 67–99 sono validi nei backup (`bkOk` ora esclude solo gli spuntini `SND`). Piatti internazionali segnati con `int` (37–47, 49): al massimo 2 a settimana. `wCost` ora penalizza: stesso piatto nello stesso giorno (+6), ripetizioni (1,5·(n−1)², +1 se in giorni consecutivi), stessa base a pranzo e cena (`bOf`: pasta, riso, cereali, patate, pane, polenta; +0,7), ingredienti principali in comune nel giorno (+0,25 ciascuno), basi oltre il limite settimanale (riso 3, polenta 2, altre 4, adattati a quanti piatti ci sono; +1,2). Gli obiettivi dei gruppi si abbassano se per l'età ci sono pochi piatti di quel gruppo (`wCtx`), così non si forzano doppioni. `balance` prova anche gli scambi fra pasti liberi. Il ricettario (CB) resta solo su ricerca, per scelta dell'utente. Quando cambiano le regole del motore si alza `PV` (ora 2): all'avvio e dopo un ripristino `upgradePlans` ricalibra una volta solo le settimane future già create di ogni componente (solo pasti liberi; `kid.pv` segna l'aggiornamento fatto). Per scelta dell'utente la settimana in corso non viene toccata: cambia solo con "Rigenera" o quando l'utente sceglie un piatto (ricalibrazione con Annulla). Le settimane nuove nascono già con il motore nuovo.
-- **Equilibrio settimanale** (v20): obiettivi per età come quota di energia di pranzo + cena (`TGT`: <12 mesi C42±10 G40±8 P18±6; <36 mesi C45 G36 P18; <12 anni C50 G32 P18, fibre ≥8 g/1000 kcal; ≥12 anni C50 G30 P20, fibre ≥12) e frequenze settimanali dei gruppi (`GW`: legumi 3–4, pesce 2–3, carne bianca 2–3, carne rossa 1–2, uova 1–2, latticini 1–3; gruppo dei piatti tuoi/ricettario ricavato dagli ingredienti, `gOf`). `wCost` = squilibri dei giorni (peso maggiore) + gruppi + ripetizioni + stesso gruppo a pranzo e cena; `balance` = ricerca locale sugli slot liberi con costo per ogni cambio. Quando l'utente sceglie un piatto (ricettario, piatto tuo, "Oppure scegli", scambio) lo slot è segnato in `kid.fix` (chiave data-slot → id+1) e `rebal` ricalibra prima l'altro pasto del giorno, poi la settimana; mai pasti preparati, scelti dall'utente (anche id ≥100) o giorni passati. Avviso con "Annulla" (`toastR`/`undoRb`). Settimane nuove e "Rigenera" nascono già bilanciate. Riga "Giorno in equilibrio / Poche proteine …" sotto i pasti (`eqLine`), spiegazione nel foglio "i". Proposta e accettata dall'utente (diversa dalla funzione "fuori casa" rifiutata).
-- **Spesa/dispensa**, **Calendario** (puntini per i pasti preparati, vista Famiglia), **Famiglia** (più componenti, allergeni: glutine, latte, uova, pesce, legumi + testo libero), **Segnala**.
-- Selettore componente come chip nell'header; header uniformi fra le sezioni.
-- Fogli (ricetta, cambia pasto, info): si chiudono anche **trascinando verso il basso** (>90 px, solo se il contenuto è in cima).
-- Backup export/import (base64 JSON, validazione, doppia conferma), salvataggio locale + cloud (capability `db`/`user`, doc `data/users/{id}/pappe`, sospeso sopra 240 KB).
+## 3. Funzioni presenti (v35)
+- **Piano**: selettore Giorno/Settimana, striscia dei giorni, pranzo e cena, colazioni e spuntini (3 preparazioni a settimana), "Segna come preparata" (scala la dispensa).
+  - Sotto i pasti, una riga con l'equilibrio del giorno ("Giorno in equilibrio · carboidrati x%, grassi y%, proteine z%" oppure "Poche proteine" ecc.).
+  - Foglio "i": spiegazione dei valori e dell'equilibrio.
+  - **Settimana**: scheda con "N di 7 giorni in equilibrio" (e quali giorni no), barre di carboidrati, grassi e proteine (media della settimana e fascia per l'età), fibre se l'età le prevede, sezione **Proteine** a quadratini a tutta larghezza (pieno, manca, margine tratteggiato/usato, oltre in arancione); pallino verde/arancione accanto a ogni giorno. Non c'è nella vista Famiglia.
+- **Scheda del pasto**: "Segna come preparata", poi la riga "Modifica | Sostituisci | Elimina" (Elimina solo per i piatti tuoi), "Chiudi" in fondo.
+- **Modifica**:
+  - su un piatto tuo modifica il piatto ovunque compaia;
+  - su un piatto dell'app crea un piatto tuo **solo per quel pasto**, con nome e ingredienti dell'originale e i grammi originali; l'originale resta negli altri giorni;
+  - si conferma con **Salva**: niente cambiamenti → "Nessuna modifica"; solo il nome → aggiorna il nome senza ricalcolare; ingredienti cambiati → ricalcola i valori e ricalibra la settimana.
+- **Elimina** (solo piatti tuoi): schermata di conferma che dice quanti pasti futuri e di quali componenti verranno sostituiti con proposte equilibrate. I pasti preparati e i giorni passati lo conservano.
+- **Sostituisci** (foglio "Cambia il pasto"):
+  - **Crea il tuo piatto**: nome + ingredienti scelti dal ricettario ingredienti, con suggerimenti mentre si scrive, etichette rimovibili e Invio per testo libero separato da virgole. Gli ingredienti sconosciuti restano segnati "non nel ricettario" ed esclusi dai valori. Poi **Calcola** → anteprima → "Salva e metti nel menu".
+  - **Cerca nel ricettario**: cerca piatti o ingredienti; suggerisce tutti gli ingredienti e i piatti del ricettario.
+  - **Oppure scegli**: elenco dei piatti adatti; poi lo scambio con un altro pasto.
+- **Ricalibrazione automatica**: quando l'utente sceglie, modifica o scambia un piatto, l'app ricalibra prima l'altro pasto del giorno e poi la settimana, toccando solo i pasti proposti dall'app. Un avviso dice quali pasti sono cambiati, con "Annulla".
+- **Avvisi per età**: ingredienti sconsigliati sotto una certa età.
+  - Limite rigido (piatto bloccato per quel componente): miele, sale, zuccheri, salumi, formaggi salati/affumicati/erborinati, molluschi, pesce affumicato o sotto sale, dado, funghi, olive e capperi, cioccolato e cacao, caffè, alcol.
+  - Solo nota sotto i 4 anni: frutta secca, uva/ciliegie/pomodorini, peperoncino.
+  - Un piatto tuo troppo "adulto" per il componente mostra "da N mesi" e il pulsante "Non adatto a …".
+- **Spesa/dispensa**, **Famiglia** (più componenti, allergeni glutine/latte/uova/pesce/legumi + testo libero), **Segnala** (solo anteprima, nessun invio).
+- Selettore del componente come chip nell'header; fogli chiudibili trascinando verso il basso.
+- Backup: export/import (base64 JSON, validazione, doppia conferma); salvataggio locale + account (sospeso sopra 240 KB).
 
-## 4. Dettagli tecnici da ricordare
-- Stato `S`: `kids[]` (id, name, sex, dob, plans{lunedì:[14 id]}, done{data-slot:id+1}, stock, bought, avoid[], avoidTxt, ageKey, snk), `cur`, `custom[]`. `S.plans/done/stock/bought/ageKey` sono proxy sul componente corrente (`K()`).
-- Piatti: `D` (id 0–49: pappe e adulti 30–49), `SND` (60–66 spuntini, fuori dal pool), `CB` (200–235 ricettario), custom 100–199. Ogni piatto `{id,n,t,a:[minMesi,maxMesi],m:[carb,grassi,prot,fibre],i:[[nome,g]],hot}`; `i0/m0` valori base scalati da `fac(mesi)` in `applyAge()` (<8:.75, <10:1, <12:1.25, <24:1.5, <48:2, <84:3, <144:3.5, ≥144:4). `R[id]={t,s[]}` ricette. `B` mappa id→piatto. `pool(dt)` filtra per età e allergeni (`GR`, `okAv`).
-- Ricettario: `NU` (nome→[carb,grassi,prot,fibre,porzione base]), `ALI` (sinonimi), `parseIng`, `resolveIng`, `calcM`, `dishFind`, `ideas`, `compose`, `ideaView`, `putIdea`, `regCustom/regList`, `delCustom`.
-- Trappole note: negli handler inline non usare una funzione globale chiamata `open` (usa `openPick`); attributi con apostrofi vanno passati da `E()`; nomi dei piatti tuoi sono ripuliti da `<>&"` e apostrofi; `fixWeeks` non sostituisce id ≥100; `bkOk` accetta id <60 o ≥100.
-- Test: harness Node con DOM finto (`tests/harness.js`; file t_dati, t_spuntini, t_spesa, t_backup, t_robustezza, t_ui, t_selettore, t_ricettario) + script Playwright in `/tmp/shots` (non persistenti).
+## 4. Dettagli tecnici
+- **Stato `S`**:
+  - `kids[]`: id, name, sex, dob, `plans{lunedìISO:[14 id]}`, `done{data-slot:id+1}`, stock, bought, avoid[], avoidTxt, ageKey, snk, `fix{data-slot:id+1}` (pasti scelti dall'utente), `pv` (versione motore applicata);
+  - `cur`, `custom[]` (piatti tuoi `{id 100–199, n, i0, m0, x, h}`).
+  - `S.plans/done/stock/bought/ageKey` sono proxy sul componente corrente `K()`.
+- **Piatti** (`B` mappa id → piatto; `R[id]={t,s[]}` ricette):
+  - `D` = piatti di base usati per generare il menu:
+    - 0–13 pappe 6–24 mesi;
+    - 14–20 piatti 10 mesi–12 anni;
+    - 21–29 piatti per bambini dai 2 anni;
+    - 30–49 adulti (internazionali segnati `int`: 37–47, 49);
+    - `XD` aggiunti: 50–59 piatti 10 mesi–12 anni, 70–74 pappe 6–12 mesi, 76–86 piatti italiani per adulti; v35: 67–69, 75, 87, 88 pappe senza proteine 6–12 mesi, 89 pappa con ricotta, 90–93 piatti senza proteine 10/12 mesi–12 anni, 94 pollo 12 mesi–12 anni, 95 e 99 senza proteine (2 anni+/adulti), 96–98 piatti con formaggi. Gli id <100 sono tutti occupati.
+  - `SND` 60–66: colazioni e spuntini, fuori dal menu.
+  - `CB` 200–249: ricettario (36 italiani + 14 pappe 236–249), **solo su ricerca** (scelta dell'utente).
+  - Piatti tuoi: 100–199.
+  - Ogni piatto `{id,n,t,a:[minMesi,maxMesi],i0,m0,...}`; porzioni scalate da `fac(mesi)` in `applyAge()` (<8:.75, <10:1, <12:1.25, <24:1.5, <48:2, <84:3, <144:3.5, ≥144:4).
+- **Ricettario ingredienti**:
+  - `NU`: 288 voci, nome → [carboidrati, grassi, proteine, fibre per 100 g, porzione base; 0 = non entra nelle porzioni];
+  - `ALI`: 146 sinonimi;
+  - funzioni `parseIng`, `resolveIng` (prima il nome intero, poi senza parole vuote; vince il nome o sinonimo più specifico), `calcM`;
+  - allergeni `GR`, gruppi proteici `GI`/`gOf`, basi `BASEI`/`bOf`, regole per età `AGE`/`minA`/`ageInfo`.
+- **Compositore**: `cmpHTML`, `cSug`, `cAdd`, `cTxt`, `compose`, `ideaView`, `putIdea`, `editDish`/`saveEdit`, `copyDish`/`saveCopy`, `delCustom`/`delDo`; stato `cName`, `cSel`, `cOrig` ('pick' | 'ideas' | 'edit' | 'copy'), `cEdit`, `cSlot`.
+- **Motore del menu**:
+  - obiettivi per età `TGT`, come quota di energia di pranzo + cena:
+    - <12 mesi: carboidrati 42±10, grassi 40±8, proteine 18±6;
+    - <36 mesi: carboidrati 45, grassi 36, proteine 18;
+    - <12 anni: carboidrati 50, grassi 32, proteine 18, fibre ≥8 g/1000 kcal;
+    - adulti: carboidrati 50, grassi 30, proteine 20, fibre ≥12;
+  - schema `GW` [quota, quota+margine]: uova [1,2], latticini/formaggi [2,2], legumi [3,4], pesce [3,4], carne bianca [2,2], carne rossa [1,1]; `GWN` nomi mostrati; in `wCost`: manca 2.5, margine usato 0.9, oltre 2 per pasto, pasti senza proteine diversi da 14−somma quote 0.9; quote abbassate se per l'età ci sono pochi piatti del gruppo (`wCtx`);
+  - `wCost` penalizza:
+    - giorni fuori equilibrio (peso maggiore);
+    - stesso piatto nello stesso giorno;
+    - ripetizioni nella settimana, di più se in giorni consecutivi;
+    - stessa base o stessi ingredienti principali a pranzo e cena;
+    - basi oltre il limite settimanale (riso 3, polenta 2, altre 4);
+    - più di 2 piatti internazionali a settimana;
+  - `balance` fa una ricerca locale sui pasti liberi (sostituzioni + scambi); `rebal` agisce dopo una scelta dell'utente; `upgradePlans` con `PV=3`;
+  - risultati di prova (v35, 20 settimane per 13 età): giorni in equilibrio 100%, nessun doppione nello stesso giorno, nessun piatto ripetuto nella settimana; schema esatto 85–100% delle settimane (2–11 anni a volte manca un uovo).
+- Il Calendario è stato tolto dalla barra (v35); il codice `drawCal` resta ma non è raggiungibile.
+- **Trappole note**:
+  - negli handler inline non usare una funzione globale `open` (usare `openPick`);
+  - gli attributi con apostrofi vanno passati da `E()`;
+  - i nomi dei piatti tuoi vengono ripuliti con `cleanN`;
+  - `fixWeeks` non sostituisce id ≥100;
+  - `bkOk` accetta nei piani ogni id esistente tranne gli spuntini (`SND`);
+  - i test che dipendono dalla data vanno lanciati con l'orologio fissato (`page.clock.install`).
+- **Test**: script Playwright scritti di volta in volta nello scratchpad (non salvati nel repository): generazione di 20 settimane per 8 fasce d'età, compositore, avvisi per età, ricalibrazione/Annulla, modifica/eliminazione, backup, confronto pixel delle schermate.
 
 ## 5. Sicurezza
-L'app non ha codice server/PHP: la vulnerabilità "PHP2SHELL" non la riguarda. Rischi reali: dati familiari sensibili nei backup, condivisione del link, nessun audit di sicurezza indipendente. L'artifact è privato finché non lo si condivide.
+L'app non ha codice server. Rischi reali:
+- dati familiari sensibili nei backup;
+- condivisione del link;
+- nessun audit indipendente.
 
-## 6. Decisioni prese sul ricettario (storico)
-- Niente AI/`sample` a runtime (non funzionerebbe per visitatori anonimi di un URL pubblico) e niente server: solo ricettario integrato + inserimento manuale ingredienti.
-- Macro sempre derivati dalla tabella ingredienti, indicati come stime.
+L'artifact resta privato finché l'utente non lo condivide. I valori nutrizionali sono stime da tabelle italiane arrotondate e le regole per età seguono indicazioni pediatriche comuni: da confermare con il pediatra.
+
+## 6. Decisioni prese (storico)
+- Niente AI a runtime e niente server: solo ricettario integrato + ingredienti scelti dall'utente.
+- Il menu usa piatti pronti (ricette fisse), non composizioni automatiche dagli ingredienti: più sicuro per lo svezzamento.
+- Il ricettario `CB` non entra nella generazione del menu.
+- Menu degli adulti misto, ma con al massimo 2 piatti internazionali a settimana.
+- Ricalibrazione automatica con avviso e Annulla, ma solo sui pasti proposti dall'app.
 
 ## 7. Da fare / idee aperte
-- **"Segnala"**: manca ancora la casella email/destinatario da inserire (l'utente deve fornirla).
-- Possibili ampliamenti: più ingredienti, composizione automatica dei piatti dagli ingredienti (discussa e scartata per ora: meno sicura per lo svezzamento), scelta di quantità se l'utente le conosce, salvataggio per singolo componente invece che per famiglia, scelta se marcare come preparato il pasto sostituito.
-- Non in programma salvo richiesta: "armonizzazione" dei menu fra componenti per limitare le preparazioni, riconoscimento con AI.
-- Mai provata l'app su un telefono vero: chiedere all'utente un riscontro (sensibilità swipe, leggibilità, ecc.).
+- **Segnala**: manca l'indirizzo email di destinazione (deve fornirlo l'utente).
+- Quantità facoltative quando l'utente crea o modifica un piatto.
+- "Salva" invece di "Calcola" anche nella creazione di un piatto nuovo.
+- Decidere se modificare un pasto già mangiato debba ricalibrare gli altri pasti (oggi lo fa).
+- Indicatori della settimana anche nella vista Famiglia.
+- Decidere se il motore può usare da solo i 3 quadratini di margine (oggi punta ai 12 esatti).
+- Pappe senza proteine: farle confermare al pediatra.
+- Sul telefono la tastiera può coprire i suggerimenti degli ingredienti, che compaiono sotto il campo. Una correzione è stata provata e scartata: riparlarne con l'utente se il problema si ripresenta.
+- Possibili: salvataggio dei piatti tuoi per singolo componente invece che per famiglia, più piatti di base.
+- Mai provata su un telefono vero: chiedere riscontri all'utente.
 
 ## 8. Come riprendere
-Fornisci alla nuova chat `pappe-v3.html` (e `tests/` se serve), poi indica la richiesta. Per modifiche: backup → modifica → `sh tests/run.sh` → prova nel browser → pubblica sullo stesso URL (passando l'URL dell'artifact come `url`).
+1. Apri la nuova chat con accesso al repository `abbassalatesta/mio-sito1` (oppure allega `index.html`) e allega questo file.
+2. Per una modifica: backup in `backup/` → modifica → prova in Chromium → pubblica l'artifact sullo stesso URL (passando l'URL come `url`; leggerlo prima con `read` se la chat è nuova) → quando l'utente conferma, pull request + merge su `main`.
+3. A ogni rilascio aggiornare questo file (versione e funzioni).
