@@ -659,6 +659,7 @@ for(let d=0;d<7;d++){const a=B[p[2*d]],b=B[p[2*d+1]];c+=dEval(p[2*d],p[2*d+1],m)
 p.forEach((id,i)=>{const d=B[id];cnt[id]=(cnt[id]||0)+1;(pos[id]=pos[id]||[]).push(i>>1);const g=gOf(d);gc[g]=(gc[g]||0)+1;const bb=bOf(d);if(bb)bc[bb]=(bc[bb]||0)+1;if(d.int)nI++});
 Object.keys(cnt).forEach(id=>{const n=cnt[id];if(n<2)return;c+=(n-1)*(n-1)*1.5;const ds=pos[id].sort((a,b)=>a-b);for(let k=1;k<ds.length;k++)if(ds[k]-ds[k-1]===1)c+=1});
 {let need=0;Object.keys(GW).forEach(g=>{const n=gc[g]||0,lo=Math.min(GW[g][0],x.av[g]||0),hi=GW[g][1];need+=lo;if(n<lo)c+=(lo-n)*2.5;else if(n>hi)c+=(n-hi)*2+(hi-lo)*.9;else c+=(n-lo)*.9});const fr=Math.max(0,14-need),na=gc.Altro||0;if(na!==fr)c+=Math.abs(na-fr)*.9}
+{const gd=[];for(let d=0;d<7;d++)gd.push(new Set([gOf(B[p[2*d]]),gOf(B[p[2*d+1]])].filter(g=>g!=='Altro')));for(let d=1;d<7;d++)gd[d].forEach(g=>{if(gd[d-1].has(g))c+=1.5})}
 Object.keys(bc).forEach(b=>{const cap=x.bc[b]||4;if(bc[b]>cap)c+=(bc[b]-cap)*1.2});if(nI>2)c+=(nI-2)*3;return c}
 /* Ricerca locale: cambia solo gli slot liberi; chg = costo di ogni pasto cambiato (evita modifiche inutili) */
 function balance(p,free,m,chg){const P=pool(wk),pl=P.map(d=>d.id),x=wCtx(P),o=p.slice(),pen=()=>chg?free.reduce((a,i)=>a+(p[i]!==o[i]?chg:0),0):0,cost=()=>wCost(p,m,x)+pen();if(!pl.length||!free.length)return[];let best=cost(),it=0,go=true;
@@ -670,7 +671,7 @@ function freeSl(p){const t=iso(new Date());return [...Array(14).keys()].filter(i
 /* Dopo una scelta dell'utente: prima l'altro pasto dello stesso giorno, poi il resto della settimana */
 function rebal(sl){const p=plan(),m=mCl(wk),fr=freeSl(p),o=p.slice(),d1=[...new Set(sl.map(i=>i^1))].filter(j=>fr.includes(j));balance(p,d1,m,.3);balance(p,fr,m,.3);const ch=fr.filter(i=>p[i]!==o[i]);return{ch,o,w:iso(wk),k:S.cur}}
 /* Quando cambiano le regole del menu, ricalibra una volta solo le settimane future già create (solo i pasti liberi); la settimana in corso resta com'è finché l'utente non la rigenera o sceglie un piatto */
-const PV=3;
+const PV=4;
 function upgradePlans(){const t=iso(mon(new Date())),w0=wk,cu=S.cur;let n=0;try{S.kids.forEach(k=>{if(k.pv===PV)return;S.cur=k.id;Object.keys(k.plans).forEach(key=>{if(key<=t)return;wk=mon(new Date(key+'T12:00:00'));const p=k.plans[key];if(Array.isArray(p)&&p.length===14)n+=balance(p,freeSl(p),mCl(wk),.15).length});k.pv=PV})}finally{S.cur=cu;wk=w0}if(n){save();toast(`Le prossime settimane seguono lo schema delle proteine: ${n} ${n>1?'pasti aggiornati':'pasto aggiornato'}`)}}
 let undoR=null;
 function toastR(msg,r){if(!r||!r.ch.length){toast(msg);return}undoR=r;const t=document.getElementById('toast');t.innerHTML=`${E(msg)} · ricalibrati per l'equilibrio: ${r.ch.map(i=>DN[i>>1]+' '+(i%2?'cena':'pranzo')).join(', ')} <button class='lnk' style='color:#fff;text-decoration:underline;padding:0 0 0 6px' onclick='undoRb()'>Annulla</button>`;t.style.pointerEvents='auto';t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>{t.classList.remove('on');t.style.pointerEvents=''},6000)}

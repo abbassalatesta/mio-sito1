@@ -13,8 +13,8 @@ App web mobile "Pappe": un unico file HTML/JS (~155 KB, in italiano). Crea menu 
 Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adulto.
 
 **Dove si trova**
-- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 36** (in prova; `main` è ancora alla 34).
-- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35–36 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
+- **Artifact** (privato finché l'utente non lo condivide): https://claude.ai/artifact/4725yDgpfi7AhSKptXK1Ju — **versione 37** (in prova; `main` è ancora alla 34).
+- **GitHub**: `abbassalatesta/mio-sito1`, file `index.html` su `main` = v34. La v35–37 è sul ramo `claude/settimana-proteine` (backup `backup/pappe-v3-backup-pre-settimana-proteine.html`), da unire quando l'utente dice "puoi pubblicare".
 - `backup/` nel repository: copie delle versioni precedenti (`pappe-v3-backup-pre-*.html`).
 - Dati dell'utente: nel browser (`localStorage`, chiave `pappe`) e nel suo account (capability `db` + `user`, documento `data/users/{id}/pappe`, campo `json`).
 
@@ -89,7 +89,7 @@ Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adu
     - <36 mesi: carboidrati 45, grassi 36, proteine 18;
     - <12 anni: carboidrati 50, grassi 32, proteine 18, fibre ≥8 g/1000 kcal;
     - adulti: carboidrati 50, grassi 30, proteine 20, fibre ≥12;
-  - schema `GW` [quota, quota+margine]: uova [1,2], latticini/formaggi [2,2], legumi [3,4], pesce [3,4], carne bianca [2,2], carne rossa [1,1]; `GWN` nomi mostrati; in `wCost`: manca 2.5, margine usato 0.9, oltre 2 per pasto, pasti senza proteine diversi da 14−somma quote 0.9; quote abbassate se per l'età ci sono pochi piatti del gruppo (`wCtx`);
+  - schema `GW` [quota, quota+margine]: uova [1,2], latticini/formaggi [2,2], legumi [3,4], pesce [3,4], carne bianca [2,2], carne rossa [1,1]; `GWN` nomi mostrati; in `wCost`: manca 2.5, margine usato 0.9, oltre 2 per pasto, pasti senza proteine diversi da 14−somma quote 0.9; stesso gruppo proteico in due giorni consecutivi 1.5 (v37); quote abbassate se per l'età ci sono pochi piatti del gruppo (`wCtx`);
   - `wCost` penalizza:
     - giorni fuori equilibrio (peso maggiore);
     - stesso piatto nello stesso giorno;
@@ -97,8 +97,8 @@ Famiglia dell'utente: una bambina di circa 9 mesi (nata a gennaio 2026) e un adu
     - stessa base o stessi ingredienti principali a pranzo e cena;
     - basi oltre il limite settimanale (riso 3, polenta 2, altre 4);
     - più di 2 piatti internazionali a settimana;
-  - `balance` fa una ricerca locale sui pasti liberi (sostituzioni + scambi); `rebal` agisce dopo una scelta dell'utente; `upgradePlans` con `PV=3`;
-  - risultati di prova (v35, 20 settimane per 13 età): giorni in equilibrio 100%, nessun doppione nello stesso giorno, nessun piatto ripetuto nella settimana; schema esatto 85–100% delle settimane (2–11 anni a volte manca un uovo).
+  - `balance` fa una ricerca locale sui pasti liberi (sostituzioni + scambi); `rebal` agisce dopo una scelta dell'utente; `upgradePlans` con `PV=4`;
+  - risultati di prova (v35, 20 settimane per 13 età): giorni in equilibrio 100%, nessun doppione nello stesso giorno, nessun piatto ripetuto nella settimana; v37: stesso gruppo in giorni consecutivi quasi mai (al massimo 2 casi su 20 settimane per età), schema esatto 80–100% (13–20 mesi più spesso fuori di un pasto), giorni in equilibrio 98–100%.
 - Il Calendario è stato tolto dalla barra (v35); il codice `drawCal` resta ma non è raggiungibile.
 - **Trappole note**:
   - negli handler inline non usare una funzione globale `open` (usare `openPick`);
